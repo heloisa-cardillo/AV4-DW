@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.autobots.automanager.entitades.CredencialUsuarioSenha;
 import com.autobots.automanager.entitades.Documento;
@@ -26,239 +27,271 @@ import com.autobots.automanager.repositorios.RepositorioEmpresa;
 @SpringBootApplication
 public class AutomanagerApplication implements CommandLineRunner {
 
-	@Autowired
-	private RepositorioEmpresa repositorioEmpresa;
+    @Autowired
+    private RepositorioEmpresa repositorioEmpresa;
 
-	public static void main(String[] args) {
-		SpringApplication.run(AutomanagerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AutomanagerApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
+        if (repositorioEmpresa.count() > 0) {
+            return;
+        }
 
-		Empresa empresa = new Empresa();
-		empresa.setRazaoSocial("Car service toyota ltda");
-		empresa.setNomeFantasia("Car service manutenção veicular");
-		empresa.setCadastro(new Date());
+        BCryptPasswordEncoder codificador = new BCryptPasswordEncoder();
 
-		Endereco enderecoEmpresa = new Endereco();
-		enderecoEmpresa.setEstado("São Paulo");
-		enderecoEmpresa.setCidade("São Paulo");
-		enderecoEmpresa.setBairro("Centro");
-		enderecoEmpresa.setRua("Av. São João");
-		enderecoEmpresa.setNumero("00");
-		enderecoEmpresa.setCodigoPostal("01035-000");
+        Empresa empresa = new Empresa();
+        empresa.setRazaoSocial("Megazoo Ltda");
+        empresa.setNomeFantasia("Megazoo Racao Coelho");
+        empresa.setCadastro(new Date());
 
-		empresa.setEndereco(enderecoEmpresa);
+        Endereco enderecoEmpresa = new Endereco();
+        enderecoEmpresa.setEstado("SP");
+        enderecoEmpresa.setCidade("Sao Jose dos Campos");
+        enderecoEmpresa.setBairro("Centro");
+        enderecoEmpresa.setRua("Av. Dr. Nelson D Avila");
+        enderecoEmpresa.setNumero("42");
+        enderecoEmpresa.setCodigoPostal("12245-070");
+        empresa.setEndereco(enderecoEmpresa);
 
-		Telefone telefoneEmpresa = new Telefone();
-		telefoneEmpresa.setDdd("011");
-		telefoneEmpresa.setNumero("986454527");
+        Telefone telefoneEmpresa = new Telefone();
+        telefoneEmpresa.setDdd("12");
+        telefoneEmpresa.setNumero("39121000");
+        empresa.getTelefones().add(telefoneEmpresa);
 
-		empresa.getTelefones().add(telefoneEmpresa);
+        Usuario funcionario = new Usuario();
+        funcionario.setNome("Jose Ricardo");
+        funcionario.setNomeSocial("O Coelho Ousado");
+        funcionario.getPerfis().add(PerfilUsuario.ROLE_VENDEDOR);
 
-		Usuario funcionario = new Usuario();
-		funcionario.setNome("Pedro Alcântara de Bragança e Bourbon");
-		funcionario.setNomeSocial("Dom Pedro");
-		funcionario.getPerfis().add(PerfilUsuario.FUNCIONARIO);
+        Email emailFuncionario = new Email();
+        emailFuncionario.setEndereco("jose@megazoo.com");
+        funcionario.getEmails().add(emailFuncionario);
 
-		Email emailFuncionario = new Email();
-		emailFuncionario.setEndereco("a@a.com");
+        Endereco enderecoFuncionario = new Endereco();
+        enderecoFuncionario.setEstado("SP");
+        enderecoFuncionario.setCidade("Sao Jose dos Campos");
+        enderecoFuncionario.setBairro("Sao Dimas");
+        enderecoFuncionario.setRua("Av. Engenheiro Jose Longo");
+        enderecoFuncionario.setNumero("10");
+        enderecoFuncionario.setCodigoPostal("12245-000");
+        funcionario.setEndereco(enderecoFuncionario);
 
-		funcionario.getEmails().add(emailFuncionario);
+        Telefone telefoneFuncionario = new Telefone();
+        telefoneFuncionario.setDdd("12");
+        telefoneFuncionario.setNumero("991111111");
+        funcionario.getTelefones().add(telefoneFuncionario);
 
-		Endereco enderecoFuncionario = new Endereco();
-		enderecoFuncionario.setEstado("São Paulo");
-		enderecoFuncionario.setCidade("São Paulo");
-		enderecoFuncionario.setBairro("Jardins");
-		enderecoFuncionario.setRua("Av. São Gabriel");
-		enderecoFuncionario.setNumero("00");
-		enderecoFuncionario.setCodigoPostal("01435-001");
+        Documento cpfFuncionario = new Documento();
+        cpfFuncionario.setDataEmissao(new Date());
+        cpfFuncionario.setNumero("11111111111");
+        cpfFuncionario.setTipo(TipoDocumento.CPF);
+        funcionario.getDocumentos().add(cpfFuncionario);
 
-		funcionario.setEndereco(enderecoFuncionario);
+        CredencialUsuarioSenha credencialFuncionario = new CredencialUsuarioSenha();
+        credencialFuncionario.setInativo(false);
+        credencialFuncionario.setNomeUsuario("josecoelho");
+        credencialFuncionario.setSenha(codificador.encode("123456"));
+        credencialFuncionario.setCriacao(new Date());
+        credencialFuncionario.setUltimoAcesso(new Date());
+        funcionario.getCredenciais().add(credencialFuncionario);
 
-		empresa.getUsuarios().add(funcionario);
+        empresa.getUsuarios().add(funcionario);
 
-		Telefone telefoneFuncionario = new Telefone();
-		telefoneFuncionario.setDdd("011");
-		telefoneFuncionario.setNumero("9854633728");
+        Usuario fornecedor = new Usuario();
+        fornecedor.setNome("Cobasi Comercio de Animais Ltda");
+        fornecedor.setNomeSocial("Cobasi");
+        fornecedor.getPerfis().add(PerfilUsuario.ROLE_FORNECEDOR);
 
-		funcionario.getTelefones().add(telefoneFuncionario);
+        Email emailFornecedor = new Email();
+        emailFornecedor.setEndereco("fornecedor@cobasi.com");
+        fornecedor.getEmails().add(emailFornecedor);
 
-		Documento cpf = new Documento();
-		cpf.setDataEmissao(new Date());
-		cpf.setNumero("856473819229");
-		cpf.setTipo(TipoDocumento.CPF);
+        CredencialUsuarioSenha credencialFornecedor = new CredencialUsuarioSenha();
+        credencialFornecedor.setInativo(false);
+        credencialFornecedor.setNomeUsuario("cobasi");
+        credencialFornecedor.setSenha(codificador.encode("123456"));
+        credencialFornecedor.setCriacao(new Date());
+        credencialFornecedor.setUltimoAcesso(new Date());
+        fornecedor.getCredenciais().add(credencialFornecedor);
 
-		funcionario.getDocumentos().add(cpf);
+        Documento cnpjFornecedor = new Documento();
+        cnpjFornecedor.setDataEmissao(new Date());
+        cnpjFornecedor.setNumero("22222222000100");
+        cnpjFornecedor.setTipo(TipoDocumento.CNPJ);
+        fornecedor.getDocumentos().add(cnpjFornecedor);
 
-		CredencialUsuarioSenha credencialFuncionario = new CredencialUsuarioSenha();
-		credencialFuncionario.setInativo(false);
-		credencialFuncionario.setNomeUsuario("dompedrofuncionario");
-		credencialFuncionario.setSenha("123456");
-		credencialFuncionario.setCriacao(new Date());
-		credencialFuncionario.setUltimoAcesso(new Date());
+        Endereco enderecoFornecedor = new Endereco();
+        enderecoFornecedor.setEstado("SP");
+        enderecoFornecedor.setCidade("Sao Jose dos Campos");
+        enderecoFornecedor.setBairro("Jardim Aquarius");
+        enderecoFornecedor.setRua("Av. Cassiopeia");
+        enderecoFornecedor.setNumero("100");
+        enderecoFornecedor.setCodigoPostal("12246-000");
+        fornecedor.setEndereco(enderecoFornecedor);
 
-		funcionario.getCredenciais().add(credencialFuncionario);
+        empresa.getUsuarios().add(fornecedor);
 
-		Usuario fornecedor = new Usuario();
-		fornecedor.setNome("Componentes varejo de partes automotivas ltda");
-		fornecedor.setNomeSocial("Loja do carro, vendas de componentes automotivos");
-		fornecedor.getPerfis().add(PerfilUsuario.FORNECEDOR);
+        Mercadoria feno = new Mercadoria();
+        feno.setCadastro(new Date());
+        feno.setFabricao(new Date());
+        feno.setNome("Feno Timothy Premium");
+        feno.setValidade(new Date());
+        feno.setQuantidade(100);
+        feno.setValor(45.90);
+        feno.setDescricao("Feno de alta qualidade para coelhos");
+        empresa.getMercadorias().add(feno);
+        fornecedor.getMercadorias().add(feno);
 
-		Email emailFornecedor = new Email();
-		emailFornecedor.setEndereco("f@f.com");
+        Usuario daniele = new Usuario();
+        daniele.setNome("Daniele");
+        daniele.setNomeSocial("A Coelha Carinhosa");
+        daniele.getPerfis().add(PerfilUsuario.ROLE_CLIENTE);
 
-		fornecedor.getEmails().add(emailFornecedor);
+        Email emailDaniele = new Email();
+        emailDaniele.setEndereco("daniele@coelhos.com");
+        daniele.getEmails().add(emailDaniele);
 
-		CredencialUsuarioSenha credencialFornecedor = new CredencialUsuarioSenha();
-		credencialFornecedor.setInativo(false);
-		credencialFornecedor.setNomeUsuario("dompedrofornecedor");
-		credencialFornecedor.setSenha("123456");
-		credencialFornecedor.setCriacao(new Date());
-		credencialFornecedor.setUltimoAcesso(new Date());
+        Documento cpfDaniele = new Documento();
+        cpfDaniele.setDataEmissao(new Date());
+        cpfDaniele.setNumero("33333333333");
+        cpfDaniele.setTipo(TipoDocumento.CPF);
+        daniele.getDocumentos().add(cpfDaniele);
 
-		fornecedor.getCredenciais().add(credencialFornecedor);
+        CredencialUsuarioSenha credencialDaniele = new CredencialUsuarioSenha();
+        credencialDaniele.setInativo(false);
+        credencialDaniele.setNomeUsuario("danielecoelha");
+        credencialDaniele.setSenha(codificador.encode("123456"));
+        credencialDaniele.setCriacao(new Date());
+        credencialDaniele.setUltimoAcesso(new Date());
+        daniele.getCredenciais().add(credencialDaniele);
 
-		Documento cnpj = new Documento();
-		cnpj.setDataEmissao(new Date());
-		cnpj.setNumero("00014556000100");
-		cnpj.setTipo(TipoDocumento.CNPJ);
+        Endereco enderecoDANIELE = new Endereco();
+        enderecoDANIELE.setEstado("SP");
+        enderecoDANIELE.setCidade("Sao Jose dos Campos");
+        enderecoDANIELE.setBairro("Jardim das Industrias");
+        enderecoDANIELE.setRua("Rua Monsenhor Joao Batista");
+        enderecoDANIELE.setNumero("1");
+        enderecoDANIELE.setCodigoPostal("12235-380");
+        daniele.setEndereco(enderecoDANIELE);
 
-		fornecedor.getDocumentos().add(cnpj);
+        Veiculo veiculoDaniele = new Veiculo();
+        veiculoDaniele.setPlaca("COE-1111");
+        veiculoDaniele.setModelo("Fusca do Coelho");
+        veiculoDaniele.setTipo(TipoVeiculo.HATCH);
+        veiculoDaniele.setProprietario(daniele);
+        daniele.getVeiculos().add(veiculoDaniele);
 
-		Endereco enderecoFornecedor = new Endereco();
-		enderecoFornecedor.setEstado("Rio de Janeiro");
-		enderecoFornecedor.setCidade("Rio de Janeiro");
-		enderecoFornecedor.setBairro("Centro");
-		enderecoFornecedor.setRua("Av. República do chile");
-		enderecoFornecedor.setNumero("00");
-		enderecoFornecedor.setCodigoPostal("20031-170");
+        empresa.getUsuarios().add(daniele);
 
-		fornecedor.setEndereco(enderecoFornecedor);
+        Usuario hanna = new Usuario();
+        hanna.setNome("Hanna");
+        hanna.setNomeSocial("A Coelha Cautelosa");
+        hanna.getPerfis().add(PerfilUsuario.ROLE_CLIENTE);
 
-		empresa.getUsuarios().add(fornecedor);
-		
-		Mercadoria rodaLigaLeve = new Mercadoria();
-		rodaLigaLeve.setCadastro(new Date());
-		rodaLigaLeve.setFabricao(new Date());
-		rodaLigaLeve.setNome("Roda de liga leva modelo toyota etios");
-		rodaLigaLeve.setValidade(new Date());
-		rodaLigaLeve.setQuantidade(30);
-		rodaLigaLeve.setValor(300.0);
-		rodaLigaLeve.setDescricao("Roda de liga leve original de fábrica da toyta para modelos do tipo hatch");
+        Email emailHanna = new Email();
+        emailHanna.setEndereco("hanna@coelhos.com");
+        hanna.getEmails().add(emailHanna);
 
-		empresa.getMercadorias().add(rodaLigaLeve);
+        Documento cpfHanna = new Documento();
+        cpfHanna.setDataEmissao(new Date());
+        cpfHanna.setNumero("44444444444");
+        cpfHanna.setTipo(TipoDocumento.CPF);
+        hanna.getDocumentos().add(cpfHanna);
 
-		fornecedor.getMercadorias().add(rodaLigaLeve);
+        CredencialUsuarioSenha credencialHanna = new CredencialUsuarioSenha();
+        credencialHanna.setInativo(false);
+        credencialHanna.setNomeUsuario("hannacoelha");
+        credencialHanna.setSenha(codificador.encode("123456"));
+        credencialHanna.setCriacao(new Date());
+        credencialHanna.setUltimoAcesso(new Date());
+        hanna.getCredenciais().add(credencialHanna);
 
-		Usuario cliente = new Usuario();
-		cliente.setNome("Pedro Alcântara de Bragança e Bourbon");
-		cliente.setNomeSocial("Dom pedro cliente");
-		cliente.getPerfis().add(PerfilUsuario.CLIENTE);
+        Endereco enderecoHanna = new Endereco();
+        enderecoHanna.setEstado("SP");
+        enderecoHanna.setCidade("Sao Jose dos Campos");
+        enderecoHanna.setBairro("Urbanova");
+        enderecoHanna.setRua("Av. Cedral");
+        enderecoHanna.setNumero("2");
+        enderecoHanna.setCodigoPostal("12223-000");
+        hanna.setEndereco(enderecoHanna);
 
-		Email emailCliente = new Email();
-		emailCliente.setEndereco("c@c.com");
+        Veiculo veiculoHanna = new Veiculo();
+        veiculoHanna.setPlaca("COE-2222");
+        veiculoHanna.setModelo("Kombi da Coelha");
+        veiculoHanna.setTipo(TipoVeiculo.SW);
+        veiculoHanna.setProprietario(hanna);
+        hanna.getVeiculos().add(veiculoHanna);
 
-		cliente.getEmails().add(emailCliente);
+        empresa.getUsuarios().add(hanna);
 
-		Documento cpfCliente = new Documento();
-		cpfCliente.setDataEmissao(new Date());
-		cpfCliente.setNumero("12584698533");
-		cpfCliente.setTipo(TipoDocumento.CPF);
+        Usuario frida = new Usuario();
+        frida.setNome("Frida");
+        frida.setNomeSocial("A Coelha Faminta");
+        frida.getPerfis().add(PerfilUsuario.ROLE_CLIENTE);
 
-		cliente.getDocumentos().add(cpfCliente);
+        Email emailFrida = new Email();
+        emailFrida.setEndereco("frida@coelhos.com");
+        frida.getEmails().add(emailFrida);
 
-		CredencialUsuarioSenha credencialCliente = new CredencialUsuarioSenha();
-		credencialCliente.setInativo(false);
-		credencialCliente.setNomeUsuario("dompedrocliente");
-		credencialCliente.setSenha("123456");
-		credencialCliente.setCriacao(new Date());
-		credencialCliente.setUltimoAcesso(new Date());
+        Documento cpfFrida = new Documento();
+        cpfFrida.setDataEmissao(new Date());
+        cpfFrida.setNumero("55555555555");
+        cpfFrida.setTipo(TipoDocumento.CPF);
+        frida.getDocumentos().add(cpfFrida);
 
-		cliente.getCredenciais().add(credencialCliente);
+        CredencialUsuarioSenha credencialFrida = new CredencialUsuarioSenha();
+        credencialFrida.setInativo(false);
+        credencialFrida.setNomeUsuario("fridacoelha");
+        credencialFrida.setSenha(codificador.encode("123456"));
+        credencialFrida.setCriacao(new Date());
+        credencialFrida.setUltimoAcesso(new Date());
+        frida.getCredenciais().add(credencialFrida);
 
-		Endereco enderecoCliente = new Endereco();
-		enderecoCliente.setEstado("São Paulo");
-		enderecoCliente.setCidade("São José dos Campos");
-		enderecoCliente.setBairro("Centro");
-		enderecoCliente.setRua("Av. Dr. Nelson D'Ávila");
-		enderecoCliente.setNumero("00");
-		enderecoCliente.setCodigoPostal("12245-070");
+        Endereco enderecoFrida = new Endereco();
+        enderecoFrida.setEstado("SP");
+        enderecoFrida.setCidade("Sao Jose dos Campos");
+        enderecoFrida.setBairro("Vila Adyana");
+        enderecoFrida.setRua("Rua Benedito dos Santos");
+        enderecoFrida.setNumero("3");
+        enderecoFrida.setCodigoPostal("12243-000");
+        frida.setEndereco(enderecoFrida);
 
-		cliente.setEndereco(enderecoCliente);
-		
-		Veiculo veiculo = new Veiculo();
-		veiculo.setPlaca("ABC-0000");
-		veiculo.setModelo("corolla-cross");
-		veiculo.setTipo(TipoVeiculo.SUV);
-		veiculo.setProprietario(cliente);
-		
-		cliente.getVeiculos().add(veiculo);
-		
-		empresa.getUsuarios().add(cliente);
+        Veiculo veiculoFrida = new Veiculo();
+        veiculoFrida.setPlaca("COE-3333");
+        veiculoFrida.setModelo("Chevette da Coelha");
+        veiculoFrida.setTipo(TipoVeiculo.SEDA);
+        veiculoFrida.setProprietario(frida);
+        frida.getVeiculos().add(veiculoFrida);
 
-		Servico trocaRodas = new Servico();
-		trocaRodas.setDescricao("Troca das rodas do carro por novas");
-		trocaRodas.setNome("Troca de rodas");
-		trocaRodas.setValor(50);
+        empresa.getUsuarios().add(frida);
 
-		Servico alinhamento = new Servico();
-		alinhamento.setDescricao("Alinhamento das rodas do carro");
-		alinhamento.setNome("Alinhamento de rodas");
-		alinhamento.setValor(50);
+        Servico banhoTosa = new Servico();
+        banhoTosa.setDescricao("Banho e tosa para coelhos");
+        banhoTosa.setNome("Banho e Tosa");
+        banhoTosa.setValor(80.0);
 
-		empresa.getServicos().add(trocaRodas);
-		empresa.getServicos().add(alinhamento);
+        Servico consulta = new Servico();
+        consulta.setDescricao("Consulta veterinaria para coelhos");
+        consulta.setNome("Consulta Veterinaria");
+        consulta.setValor(150.0);
 
-		Venda venda = new Venda();
-		venda.setCadastro(new Date());
-		venda.setCliente(cliente);
-		venda.getMercadorias().add(rodaLigaLeve);
-		venda.setIdentificacao("1234698745");
-		venda.setFuncionario(funcionario);
-		venda.getServicos().add(trocaRodas);
-		venda.getServicos().add(alinhamento);
-		venda.setVeiculo(veiculo);
-		veiculo.getVendas().add(venda);
+        empresa.getServicos().add(banhoTosa);
+        empresa.getServicos().add(consulta);
 
-		empresa.getVendas().add(venda);
+        Venda venda = new Venda();
+        venda.setCadastro(new Date());
+        venda.setCliente(daniele);
+        venda.getMercadorias().add(feno);
+        venda.setIdentificacao("VENDA-0001");
+        venda.setFuncionario(funcionario);
+        venda.getServicos().add(banhoTosa);
+        venda.setVeiculo(veiculoDaniele);
+        veiculoDaniele.getVendas().add(venda);
+        empresa.getVendas().add(venda);
 
-		repositorioEmpresa.save(empresa);
-		
-		Mercadoria rodaLigaLeve2 = new Mercadoria();
-		rodaLigaLeve2.setCadastro(new Date());
-		rodaLigaLeve2.setFabricao(new Date());
-		rodaLigaLeve2.setNome("Roda de liga leva modelo toyota etios");
-		rodaLigaLeve2.setValidade(new Date());
-		rodaLigaLeve2.setQuantidade(30);
-		rodaLigaLeve2.setValor(300.0);
-		rodaLigaLeve2.setDescricao("Roda de liga leve original de fábrica da toyta para modelos do tipo hatch");
-		
-		Servico alinhamento2 = new Servico();
-		alinhamento2.setDescricao("Alinhamento das rodas do carro");
-		alinhamento2.setNome("Alinhamento de rodas");
-		alinhamento2.setValor(50);
-		
-		Servico balanceamento = new Servico();
-		balanceamento.setDescricao("balanceamento das rodas do carro");
-		balanceamento.setNome("balanceamento de rodas");
-		balanceamento.setValor(30);
-		
-		Venda venda2 = new Venda();
-		venda2.setCadastro(new Date());
-		venda2.setCliente(cliente);
-		venda2.getMercadorias().add(rodaLigaLeve2);
-		venda2.setIdentificacao("1234698749");
-		venda2.setFuncionario(funcionario);
-		venda2.getServicos().add(balanceamento);
-		venda2.getServicos().add(alinhamento2);
-		venda2.setVeiculo(veiculo);
-		veiculo.getVendas().add(venda2);
-
-		empresa.getVendas().add(venda2);
-		
-		repositorioEmpresa.save(empresa);
-
-	}
+        repositorioEmpresa.save(empresa);
+    }
 }
