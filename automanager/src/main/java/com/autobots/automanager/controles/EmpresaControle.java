@@ -21,7 +21,7 @@ public class EmpresaControle {
     @Autowired
     private EmpresaServico servico;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<Empresa> obterEmpresa(@PathVariable long id) {
         Empresa empresa = servico.obterEmpresa(id);
@@ -29,7 +29,7 @@ public class EmpresaControle {
         return new ResponseEntity<>(empresa, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping
     public ResponseEntity<List<Empresa>> obterEmpresas() {
         List<Empresa> empresas = servico.obterEmpresas();

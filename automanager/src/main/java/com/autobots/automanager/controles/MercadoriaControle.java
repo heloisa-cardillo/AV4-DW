@@ -21,7 +21,7 @@ public class MercadoriaControle {
     @Autowired
     private MercadoriaServico servico;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<Mercadoria> obterMercadoria(@PathVariable long id) {
         Mercadoria mercadoria = servico.obterMercadoria(id);
@@ -29,7 +29,7 @@ public class MercadoriaControle {
         return new ResponseEntity<>(mercadoria, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping
     public ResponseEntity<List<Mercadoria>> obterMercadorias() {
         List<Mercadoria> mercadorias = servico.obterMercadorias();

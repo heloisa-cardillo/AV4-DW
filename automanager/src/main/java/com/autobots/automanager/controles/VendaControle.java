@@ -1,6 +1,7 @@
 package com.autobots.automanager.controles;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -8,6 +9,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.autobots.automanager.dto.VendaDto;
@@ -21,7 +23,7 @@ public class VendaControle {
     @Autowired
     private VendaServico servico;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<Venda> obterVenda(@PathVariable long id) {
         Venda venda = servico.obterVenda(id);
@@ -29,10 +31,30 @@ public class VendaControle {
         return new ResponseEntity<>(venda, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping
     public ResponseEntity<List<Venda>> obterVendas() {
         List<Venda> vendas = servico.obterVendas();
+        if (vendas.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        vendas.forEach(v -> {
+            Link self = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(VendaControle.class).obterVenda(v.getId())).withSelfRel();
+            v.add(self);
+        });
+        return new ResponseEntity<>(vendas, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @GetMapping("/minhas")
+    public ResponseEntity<List<Venda>> obterMinhasVendas(Authentication authentication) {
+        String nomeUsuario = authentication.getName();
+        List<Venda> vendas = servico.obterVendas().stream()
+                .filter(v -> v.getCliente() != null
+                && v.getCliente().getCredenciais().stream()
+                        .anyMatch(c -> c instanceof com.autobots.automanager.entitades.CredencialUsuarioSenha
+                        && ((com.autobots.automanager.entitades.CredencialUsuarioSenha) c).getNomeUsuario().equals(nomeUsuario)))
+                .collect(Collectors.toList());
         if (vendas.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

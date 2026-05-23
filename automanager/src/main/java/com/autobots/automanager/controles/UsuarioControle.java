@@ -8,9 +8,11 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.autobots.automanager.dto.UsuarioDto;
+import com.autobots.automanager.entitades.CredencialUsuarioSenha;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.servicos.UsuarioServico;
 
@@ -41,6 +43,24 @@ public class UsuarioControle {
             u.add(self);
         });
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @GetMapping("/meu")
+    public ResponseEntity<Usuario> obterMeuUsuario(Authentication authentication) {
+        String nomeUsuario = authentication.getName();
+        List<Usuario> usuarios = servico.obterUsuarios();
+        Usuario meu = usuarios.stream()
+                .filter(u -> u.getCredenciais().stream()
+                .anyMatch(c -> c instanceof CredencialUsuarioSenha
+                && ((CredencialUsuarioSenha) c).getNomeUsuario().equals(nomeUsuario)))
+                .findFirst()
+                .orElse(null);
+        if (meu == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        adicionarLinks(meu);
+        return new ResponseEntity<>(meu, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
