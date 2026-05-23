@@ -43,8 +43,8 @@ public class AutomanagerApplication implements CommandLineRunner {
         BCryptPasswordEncoder codificador = new BCryptPasswordEncoder();
 
         Empresa empresa = new Empresa();
-        empresa.setRazaoSocial("Megazoo Ltda");
-        empresa.setNomeFantasia("Megazoo Racao Coelho");
+        empresa.setRazaoSocial("Autobots Pecas Ltda");
+        empresa.setNomeFantasia("Autobots Autopecas");
         empresa.setCadastro(new Date());
 
         Endereco enderecoEmpresa = new Endereco();
@@ -63,11 +63,11 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         Usuario funcionario = new Usuario();
         funcionario.setNome("Jose Ricardo");
-        funcionario.setNomeSocial("O Coelho Ousado");
+        funcionario.setNomeSocial("O Mecanico Ousado");
         funcionario.getPerfis().add(PerfilUsuario.ROLE_VENDEDOR);
 
         Email emailFuncionario = new Email();
-        emailFuncionario.setEndereco("jose@megazoo.com");
+        emailFuncionario.setEndereco("jose@autobots.com");
         funcionario.getEmails().add(emailFuncionario);
 
         Endereco enderecoFuncionario = new Endereco();
@@ -92,7 +92,7 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         CredencialUsuarioSenha credencialFuncionario = new CredencialUsuarioSenha();
         credencialFuncionario.setInativo(false);
-        credencialFuncionario.setNomeUsuario("josecoelho");
+        credencialFuncionario.setNomeUsuario("josericardo");
         credencialFuncionario.setSenha(codificador.encode("123456"));
         credencialFuncionario.setCriacao(new Date());
         credencialFuncionario.setUltimoAcesso(new Date());
@@ -101,17 +101,17 @@ public class AutomanagerApplication implements CommandLineRunner {
         empresa.getUsuarios().add(funcionario);
 
         Usuario fornecedor = new Usuario();
-        fornecedor.setNome("Cobasi Comercio de Animais Ltda");
-        fornecedor.setNomeSocial("Cobasi");
+        fornecedor.setNome("Bosch Brasil Ltda");
+        fornecedor.setNomeSocial("Bosch");
         fornecedor.getPerfis().add(PerfilUsuario.ROLE_FORNECEDOR);
 
         Email emailFornecedor = new Email();
-        emailFornecedor.setEndereco("fornecedor@cobasi.com");
+        emailFornecedor.setEndereco("fornecedor@bosch.com");
         fornecedor.getEmails().add(emailFornecedor);
 
         CredencialUsuarioSenha credencialFornecedor = new CredencialUsuarioSenha();
         credencialFornecedor.setInativo(false);
-        credencialFornecedor.setNomeUsuario("cobasi");
+        credencialFornecedor.setNomeUsuario("bosch");
         credencialFornecedor.setSenha(codificador.encode("123456"));
         credencialFornecedor.setCriacao(new Date());
         credencialFornecedor.setUltimoAcesso(new Date());
@@ -134,24 +134,24 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         empresa.getUsuarios().add(fornecedor);
 
-        Mercadoria feno = new Mercadoria();
-        feno.setCadastro(new Date());
-        feno.setFabricao(new Date());
-        feno.setNome("Feno Timothy Premium");
-        feno.setValidade(new Date());
-        feno.setQuantidade(100);
-        feno.setValor(45.90);
-        feno.setDescricao("Feno de alta qualidade para coelhos");
-        empresa.getMercadorias().add(feno);
-        fornecedor.getMercadorias().add(feno);
+        Mercadoria oleoMotor = new Mercadoria();
+        oleoMotor.setCadastro(new Date());
+        oleoMotor.setFabricao(new Date());
+        oleoMotor.setNome("Oleo Motor 5W30 Sintetico");
+        oleoMotor.setValidade(new Date());
+        oleoMotor.setQuantidade(100);
+        oleoMotor.setValor(45.90);
+        oleoMotor.setDescricao("Oleo sintetico de alta performance para motores a gasolina e flex");
+        empresa.getMercadorias().add(oleoMotor);
+        fornecedor.getMercadorias().add(oleoMotor);
 
         Usuario daniele = new Usuario();
         daniele.setNome("Daniele");
-        daniele.setNomeSocial("A Coelha Carinhosa");
+        daniele.setNomeSocial("A Piloto Cautelosa");
         daniele.getPerfis().add(PerfilUsuario.ROLE_CLIENTE);
 
         Email emailDaniele = new Email();
-        emailDaniele.setEndereco("daniele@coelhos.com");
+        emailDaniele.setEndereco("daniele@autobots.com");
         daniele.getEmails().add(emailDaniele);
 
         Documento cpfDaniele = new Documento();
@@ -162,7 +162,7 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         CredencialUsuarioSenha credencialDaniele = new CredencialUsuarioSenha();
         credencialDaniele.setInativo(false);
-        credencialDaniele.setNomeUsuario("danielecoelha");
+        credencialDaniele.setNomeUsuario("daniele");
         credencialDaniele.setSenha(codificador.encode("123456"));
         credencialDaniele.setCriacao(new Date());
         credencialDaniele.setUltimoAcesso(new Date());
@@ -178,9 +178,9 @@ public class AutomanagerApplication implements CommandLineRunner {
         daniele.setEndereco(enderecoDANIELE);
 
         Veiculo veiculoDaniele = new Veiculo();
-        veiculoDaniele.setPlaca("COE-1111");
-        veiculoDaniele.setModelo("Fusca do Coelho");
-        veiculoDaniele.setTipo(TipoVeiculo.HATCH);
+        veiculoDaniele.setPlaca("ABC-1111");
+        veiculoDaniele.setModelo("Toyota Corolla");
+        veiculoDaniele.setTipo(TipoVeiculo.SEDA);
         veiculoDaniele.setProprietario(daniele);
         daniele.getVeiculos().add(veiculoDaniele);
 
@@ -188,11 +188,11 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         Usuario hanna = new Usuario();
         hanna.setNome("Hanna");
-        hanna.setNomeSocial("A Coelha Cautelosa");
+        hanna.setNomeSocial("A Piloto Experiente");
         hanna.getPerfis().add(PerfilUsuario.ROLE_CLIENTE);
 
         Email emailHanna = new Email();
-        emailHanna.setEndereco("hanna@coelhos.com");
+        emailHanna.setEndereco("hanna@autobots.com");
         hanna.getEmails().add(emailHanna);
 
         Documento cpfHanna = new Documento();
@@ -203,7 +203,7 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         CredencialUsuarioSenha credencialHanna = new CredencialUsuarioSenha();
         credencialHanna.setInativo(false);
-        credencialHanna.setNomeUsuario("hannacoelha");
+        credencialHanna.setNomeUsuario("hanna");
         credencialHanna.setSenha(codificador.encode("123456"));
         credencialHanna.setCriacao(new Date());
         credencialHanna.setUltimoAcesso(new Date());
@@ -219,9 +219,9 @@ public class AutomanagerApplication implements CommandLineRunner {
         hanna.setEndereco(enderecoHanna);
 
         Veiculo veiculoHanna = new Veiculo();
-        veiculoHanna.setPlaca("COE-2222");
-        veiculoHanna.setModelo("Kombi da Coelha");
-        veiculoHanna.setTipo(TipoVeiculo.SW);
+        veiculoHanna.setPlaca("ABC-2222");
+        veiculoHanna.setModelo("VW Polo");
+        veiculoHanna.setTipo(TipoVeiculo.HATCH);
         veiculoHanna.setProprietario(hanna);
         hanna.getVeiculos().add(veiculoHanna);
 
@@ -229,11 +229,11 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         Usuario frida = new Usuario();
         frida.setNome("Frida");
-        frida.setNomeSocial("A Coelha Faminta");
+        frida.setNomeSocial("A Piloto Veloz");
         frida.getPerfis().add(PerfilUsuario.ROLE_CLIENTE);
 
         Email emailFrida = new Email();
-        emailFrida.setEndereco("frida@coelhos.com");
+        emailFrida.setEndereco("frida@autobots.com");
         frida.getEmails().add(emailFrida);
 
         Documento cpfFrida = new Documento();
@@ -244,7 +244,7 @@ public class AutomanagerApplication implements CommandLineRunner {
 
         CredencialUsuarioSenha credencialFrida = new CredencialUsuarioSenha();
         credencialFrida.setInativo(false);
-        credencialFrida.setNomeUsuario("fridacoelha");
+        credencialFrida.setNomeUsuario("frida");
         credencialFrida.setSenha(codificador.encode("123456"));
         credencialFrida.setCriacao(new Date());
         credencialFrida.setUltimoAcesso(new Date());
@@ -260,34 +260,34 @@ public class AutomanagerApplication implements CommandLineRunner {
         frida.setEndereco(enderecoFrida);
 
         Veiculo veiculoFrida = new Veiculo();
-        veiculoFrida.setPlaca("COE-3333");
-        veiculoFrida.setModelo("Chevette da Coelha");
-        veiculoFrida.setTipo(TipoVeiculo.SEDA);
+        veiculoFrida.setPlaca("ABC-3333");
+        veiculoFrida.setModelo("Toyota Yaris");
+        veiculoFrida.setTipo(TipoVeiculo.HATCH);
         veiculoFrida.setProprietario(frida);
         frida.getVeiculos().add(veiculoFrida);
 
         empresa.getUsuarios().add(frida);
 
-        Servico banhoTosa = new Servico();
-        banhoTosa.setDescricao("Banho e tosa para coelhos");
-        banhoTosa.setNome("Banho e Tosa");
-        banhoTosa.setValor(80.0);
+        Servico trocaOleo = new Servico();
+        trocaOleo.setDescricao("Troca de oleo do motor com filtro incluso");
+        trocaOleo.setNome("Troca de Oleo");
+        trocaOleo.setValor(80.0);
 
-        Servico consulta = new Servico();
-        consulta.setDescricao("Consulta veterinaria para coelhos");
-        consulta.setNome("Consulta Veterinaria");
-        consulta.setValor(150.0);
+        Servico alinhamento = new Servico();
+        alinhamento.setDescricao("Alinhamento e balanceamento completo dos quatro pneus");
+        alinhamento.setNome("Alinhamento e Balanceamento");
+        alinhamento.setValor(150.0);
 
-        empresa.getServicos().add(banhoTosa);
-        empresa.getServicos().add(consulta);
+        empresa.getServicos().add(trocaOleo);
+        empresa.getServicos().add(alinhamento);
 
         Venda venda = new Venda();
         venda.setCadastro(new Date());
         venda.setCliente(daniele);
-        venda.getMercadorias().add(feno);
+        venda.getMercadorias().add(oleoMotor);
         venda.setIdentificacao("VENDA-0001");
         venda.setFuncionario(funcionario);
-        venda.getServicos().add(banhoTosa);
+        venda.getServicos().add(trocaOleo);
         venda.setVeiculo(veiculoDaniele);
         veiculoDaniele.getVendas().add(venda);
         empresa.getVendas().add(venda);
